@@ -1,9 +1,13 @@
 import time
+from sympy import init_printing
 import sys
 import sympy as sp
 from gplearn.genetic import SymbolicRegressor
 import numpy as np
 from pprint import pprint
+import sympy.printing as printing
+
+init_printing()
 
 def dier (msg):
     pprint(msg)
@@ -17,9 +21,9 @@ y_truth = x0**2 - x1**2 + x1 - 1 #true function
 input_data = [[1, 1], [2, 2], [3, 5], [1, 2], [1, 0], [0, 1], [0, 0], [10, 10], [15, 3]]
 results = []
 
-i = 0
+i = 1
 for dataset in input_data:
-    naptime = dataset[0] * dataset[1] + (dataset[0] / (10 + dataset[1]))
+    naptime = 2 * (dataset[0] * 3 * dataset[1]) + (dataset[0] + 1)
     print("Trying dataset " + str(i) + " of " + str(len(input_data)) + ", naptime: " + str(naptime))
     """
     start = time.time()
@@ -34,12 +38,12 @@ X_train = np.array(input_data)
 y_train = np.array(results)
 
 est_gp = SymbolicRegressor(
-    population_size=5000, #the number of programs in each generation
-    generations=10,
+    population_size=50, #the number of programs in each generation
+    generations=1,
     stopping_criteria=0.01, #The required metric value required in order to stop evolution early.
     p_crossover=0.7,
     p_subtree_mutation=0.1,
-    p_hoist_mutation=0.1, 
+    p_hoist_mutation=0.05, 
 #0.05, The probability of performing hoist mutation on a tournament winner. Hoist mutation takes the winner of a tournament and selects a random subtree from it. A random subtree of that subtree is then selected and this is ‘hoisted’ into the original subtrees location to form an offspring in the next generation. This method helps to control bloat.
     p_point_mutation=0.1,
     max_samples=0.9,
@@ -59,8 +63,8 @@ locals = {
     "mul": sp.Mul,
     "sub": sp.Lambda((x, y), x - y),
     "div": sp.Lambda((x, y), x/y),
-    "X0": sp.symbols("SleepA"),
-    "X1": sp.symbols("SleepB")
+    "X0": sp.symbols("\mathrm{SleepA}"),
+    "X1": sp.symbols("\mathrm{SleepB}")
 }
 
-print("O(" + str(sp.sympify(str(best), locals=locals)) + ")")
+print(printing.latex(sp.sympify(str(best), locals=locals)))
