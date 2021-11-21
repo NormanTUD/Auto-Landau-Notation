@@ -20,9 +20,9 @@ results = []
 i = 0
 for dataset in input_data:
     print("Trying dataset " + str(i) + " of " + str(len(input_data)))
-    start = time.time_ns()
+    start = time.time()
     time.sleep(dataset[0] + dataset[1])
-    end = time.time_ns()
+    end = time.time()
     results.append(end - start)
     i = i + 1
 
@@ -35,7 +35,7 @@ est_gp = SymbolicRegressor(population_size=5000, #the number of programs in each
                            p_hoist_mutation=0.05, #0.05, The probability of performing hoist mutation on a tournament winner. Hoist mutation takes the winner of a tournament and selects a random subtree from it. A random subtree of that subtree is then selected and this is ‘hoisted’ into the original subtrees location to form an offspring in the next generation. This method helps to control bloat.
                            p_point_mutation=0.1,
                            max_samples=0.9, verbose=1,
-                           parsimony_coefficient=0.01, random_state=0)
+                           parsimony_coefficient=0.1, random_state=0)
 est_gp.fit(X_train, y_train)
 
 best = est_gp._program
